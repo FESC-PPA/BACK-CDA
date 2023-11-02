@@ -6,6 +6,116 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Organization {
+  organizationId Int     @id @unique @default(autoincrement())
+  nit            String
+  name           String
+  User           User[]
+  Based          Based[]
+}
+
+model Role {
+  roleId  Int     @id @unique @default(autoincrement())
+  role    String
+  details String?
+  User    User[]
+}
+
+model User {
+  userId                     Int            @id @unique @default(autoincrement())
+  organization               Organization   @relation(fields: [organizationOrganizationId], references: [organizationId])
+  role                       Role           @relation(fields: [roleRoleId], references: [roleId])
+  identify                   String
+  firstName                  String
+  lastName                   String
+  phoneNumber                String?
+  organizationOrganizationId Int
+  roleRoleId                 Int
+  Auth                       Auth[]
+  FacialData                 FacialData[]
+  UserSchedule               UserSchedule[]
+  Excuse                     Excuse[]
+}
+
+model Auth {
+  authId     Int      @id @unique @default(autoincrement())
+  user       User     @relation(fields: [userUserId], references: [userId])
+  email      String
+  password   String
+  active     Boolean? @default(true)
+  userUserId Int
+}
+
+model FacialData {
+  facialDataId Int    @id @unique @default(autoincrement())
+  user         User   @relation(fields: [userUserId], references: [userId])
+  data         String
+  userUserId   Int
+}
+
+model Based {
+  basedId                    Int          @id @unique @default(autoincrement())
+  organization               Organization @relation(fields: [organizationOrganizationId], references: [organizationId])
+  name                       String
+  perimeterLocations         Json
+  organizationOrganizationId Int
+  Schedule                   Schedule[]
+}
+
+model Schedule {
+  scheduleId   Int            @id @unique @default(autoincrement())
+  based        Based          @relation(fields: [basedBasedId], references: [basedId])
+  name         String
+  basedBasedId Int
+  UserSchedule UserSchedule[]
+  WorkDays     WorkDays[]
+}
+
+model UserSchedule {
+  userScheduleId     Int          @id @unique @default(autoincrement())
+  schedule           Schedule     @relation(fields: [scheduleScheduleId], references: [scheduleId])
+  user               User         @relation(fields: [userUserId], references: [userId])
+  scheduleScheduleId Int
+  userUserId         Int
+  Attendance         Attendance[]
+}
+
+model Attendance {
+  attendanceId               Int          @id @unique @default(autoincrement())
+  userSchedule               UserSchedule @relation(fields: [userScheduleUserScheduleId], references: [userScheduleId])
+  date                       DateTime
+  late                       Int
+  userScheduleUserScheduleId Int
+  Excuse                     Excuse[]
+}
+
+model WeekDays {
+  weekDaysId Int        @id @unique @default(autoincrement())
+  day        String
+  WorkDays   WorkDays[]
+}
+
+model WorkDays {
+  workDaysId         Int      @id @unique @default(autoincrement())
+  weekDays           WeekDays @relation(fields: [weekDaysWeekDaysId], references: [weekDaysId])
+  schedule           Schedule @relation(fields: [scheduleScheduleId], references: [scheduleId])
+  startTime          DateTime
+  endTime            DateTime
+  weekDaysWeekDaysId Int
+  scheduleScheduleId Int
+}
+
+model Excuse {
+  excuseId               Int        @id @unique @default(autoincrement())
+  status                 Int        @default(0)
+  resolutionDate         DateTime?
+  comment                String?
+  attendance             Attendance @relation(fields: [attendanceAttendanceId], references: [attendanceId])
+  user                   User       @relation(fields: [userUserId], references: [userId])
+  attendanceAttendanceId Int
+  userUserId             Int
 }
