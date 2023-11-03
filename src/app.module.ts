@@ -15,4 +15,4 @@ import { FacialDataModule } from './facial-data/facial-data.module';
   imports: [AuthModule, OrganizationModule, UserModule, BasedModule, ScheduleModule, WorkDaysModule, UserScheduleModule, AttendanceModule, ExcuseModule, FacialDataModule],
   providers: [PrismaService],
 })
-export class AppModule {}
+export class AppModule { }
