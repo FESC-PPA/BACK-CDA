@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,112 +7,134 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Organization {
-  organizationId Int     @id @unique @default(autoincrement())
-  nit            String
-  name           String
-  User           User[]
-  Based          Based[]
+model attendance {
+  attendanceId               Int          @id @unique(map: "Attendance_attendanceId_key") @default(autoincrement())
+  date                       DateTime
+  late                       Int
+  userScheduleUserScheduleId Int
+  userschedule               userschedule @relation(fields: [userScheduleUserScheduleId], references: [userScheduleId], map: "Attendance_userScheduleUserScheduleId_fkey")
+  excuse                     excuse[]
+
+  @@index([userScheduleUserScheduleId], map: "Attendance_userScheduleUserScheduleId_fkey")
 }
 
-model Role {
-  roleId  Int     @id @unique @default(autoincrement())
-  role    String
-  details String?
-  User    User[]
-}
-
-model User {
-  userId                     Int            @id @unique @default(autoincrement())
-  organization               Organization   @relation(fields: [organizationOrganizationId], references: [organizationId])
-  role                       Role           @relation(fields: [roleRoleId], references: [roleId])
-  identify                   String
-  firstName                  String
-  lastName                   String
-  phoneNumber                String?
-  organizationOrganizationId Int
-  roleRoleId                 Int
-  Auth                       Auth[]
-  FacialData                 FacialData[]
-  UserSchedule               UserSchedule[]
-  Excuse                     Excuse[]
-}
-
-model Auth {
-  authId     Int      @id @unique @default(autoincrement())
-  user       User     @relation(fields: [userUserId], references: [userId])
+model auth {
+  authId     Int      @id @unique(map: "Auth_authId_key") @default(autoincrement())
   email      String
   password   String
   active     Boolean? @default(true)
   userUserId Int
+  user       user     @relation(fields: [userUserId], references: [userId], map: "Auth_userUserId_fkey")
+
+  @@index([userUserId], map: "Auth_userUserId_fkey")
 }
 
-model FacialData {
-  facialDataId Int    @id @unique @default(autoincrement())
-  user         User   @relation(fields: [userUserId], references: [userId])
+model based {
+  basedId            Int          @id @unique(map: "Based_basedId_key") @default(autoincrement())
+  name               String
+  perimeterLocations String       @db.LongText
+  organizationId     Int
+  organization       organization @relation(fields: [organizationId], references: [organizationId], map: "Based_organizationId_fkey")
+  schedule           schedule[]
+
+  @@index([organizationId], map: "Based_organizationId_fkey")
+}
+
+model excuse {
+  excuseId               Int        @id @unique(map: "Excuse_excuseId_key") @default(autoincrement())
+  status                 Int        @default(0)
+  resolutionDate         DateTime?
+  comment                String?
+  attendanceAttendanceId Int
+  userUserId             Int
+  attendance             attendance @relation(fields: [attendanceAttendanceId], references: [attendanceId], map: "Excuse_attendanceAttendanceId_fkey")
+  user                   user       @relation(fields: [userUserId], references: [userId], map: "Excuse_userUserId_fkey")
+
+  @@index([attendanceAttendanceId], map: "Excuse_attendanceAttendanceId_fkey")
+  @@index([userUserId], map: "Excuse_userUserId_fkey")
+}
+
+model facialdata {
+  facialDataId Int    @id @unique(map: "FacialData_facialDataId_key") @default(autoincrement())
   data         String
   userUserId   Int
+  user         user   @relation(fields: [userUserId], references: [userId], map: "FacialData_userUserId_fkey")
+
+  @@index([userUserId], map: "FacialData_userUserId_fkey")
 }
 
-model Based {
-  basedId                    Int          @id @unique @default(autoincrement())
-  organization               Organization @relation(fields: [organizationOrganizationId], references: [organizationId])
-  name                       String
-  perimeterLocations         Json
-  organizationOrganizationId Int
-  Schedule                   Schedule[]
+model organization {
+  organizationId Int     @id @unique(map: "Organization_organizationId_key") @default(autoincrement())
+  nit            String
+  name           String
+  based          based[]
+  user           user[]
 }
 
-model Schedule {
-  scheduleId   Int            @id @unique @default(autoincrement())
-  based        Based          @relation(fields: [basedBasedId], references: [basedId])
+model role {
+  roleId  Int     @id @unique(map: "Role_roleId_key") @default(autoincrement())
+  role    String
+  details String?
+  user    user[]
+}
+
+model schedule {
+  scheduleId   Int            @id @unique(map: "Schedule_scheduleId_key") @default(autoincrement())
   name         String
   basedBasedId Int
-  UserSchedule UserSchedule[]
-  WorkDays     WorkDays[]
+  based        based          @relation(fields: [basedBasedId], references: [basedId], map: "Schedule_basedBasedId_fkey")
+  userschedule userschedule[]
+  workdays     workdays[]
+
+  @@index([basedBasedId], map: "Schedule_basedBasedId_fkey")
 }
 
-model UserSchedule {
-  userScheduleId     Int          @id @unique @default(autoincrement())
-  schedule           Schedule     @relation(fields: [scheduleScheduleId], references: [scheduleId])
-  user               User         @relation(fields: [userUserId], references: [userId])
+model user {
+  userId         Int            @id @unique(map: "User_userId_key") @default(autoincrement())
+  identify       String
+  firstName      String
+  lastName       String
+  phoneNumber    String?
+  roleRoleId     Int
+  organizationId Int
+  auth           auth[]
+  excuse         excuse[]
+  facialdata     facialdata[]
+  organization   organization   @relation(fields: [organizationId], references: [organizationId], map: "User_organizationId_fkey")
+  role           role           @relation(fields: [roleRoleId], references: [roleId], map: "User_roleRoleId_fkey")
+  userschedule   userschedule[]
+
+  @@index([organizationId], map: "User_organizationId_fkey")
+  @@index([roleRoleId], map: "User_roleRoleId_fkey")
+}
+
+model userschedule {
+  userScheduleId     Int          @id @unique(map: "UserSchedule_userScheduleId_key") @default(autoincrement())
   scheduleScheduleId Int
   userUserId         Int
-  Attendance         Attendance[]
+  attendance         attendance[]
+  schedule           schedule     @relation(fields: [scheduleScheduleId], references: [scheduleId], map: "UserSchedule_scheduleScheduleId_fkey")
+  user               user         @relation(fields: [userUserId], references: [userId], map: "UserSchedule_userUserId_fkey")
+
+  @@index([scheduleScheduleId], map: "UserSchedule_scheduleScheduleId_fkey")
+  @@index([userUserId], map: "UserSchedule_userUserId_fkey")
 }
 
-model Attendance {
-  attendanceId               Int          @id @unique @default(autoincrement())
-  userSchedule               UserSchedule @relation(fields: [userScheduleUserScheduleId], references: [userScheduleId])
-  date                       DateTime
-  late                       Int
-  userScheduleUserScheduleId Int
-  Excuse                     Excuse[]
-}
-
-model WeekDays {
-  weekDaysId Int        @id @unique @default(autoincrement())
+model weekdays {
+  weekDaysId Int        @id @unique(map: "WeekDays_weekDaysId_key") @default(autoincrement())
   day        String
-  WorkDays   WorkDays[]
+  workdays   workdays[]
 }
 
-model WorkDays {
-  workDaysId         Int      @id @unique @default(autoincrement())
-  weekDays           WeekDays @relation(fields: [weekDaysWeekDaysId], references: [weekDaysId])
-  schedule           Schedule @relation(fields: [scheduleScheduleId], references: [scheduleId])
+model workdays {
+  workDaysId         Int      @id @unique(map: "WorkDays_workDaysId_key") @default(autoincrement())
   startTime          DateTime
   endTime            DateTime
   weekDaysWeekDaysId Int
   scheduleScheduleId Int
-}
+  schedule           schedule @relation(fields: [scheduleScheduleId], references: [scheduleId], map: "WorkDays_scheduleScheduleId_fkey")
+  weekdays           weekdays @relation(fields: [weekDaysWeekDaysId], references: [weekDaysId], map: "WorkDays_weekDaysWeekDaysId_fkey")
 
-model Excuse {
-  excuseId               Int        @id @unique @default(autoincrement())
-  status                 Int        @default(0)
-  resolutionDate         DateTime?
-  comment                String?
-  attendance             Attendance @relation(fields: [attendanceAttendanceId], references: [attendanceId])
-  user                   User       @relation(fields: [userUserId], references: [userId])
-  attendanceAttendanceId Int
-  userUserId             Int
+  @@index([scheduleScheduleId], map: "WorkDays_scheduleScheduleId_fkey")
+  @@index([weekDaysWeekDaysId], map: "WorkDays_weekDaysWeekDaysId_fkey")
 }
