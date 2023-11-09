@@ -9,7 +9,7 @@ import { UserModule } from 'src/user/user.module';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, PrismaService],
+  providers: [AuthService, JwtStrategy, PrismaService],
   imports: [
     PassportModule,
     JwtModule.register({

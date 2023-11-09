@@ -1,1 +1,3 @@
-export class CreateBasedDto {}
+export class CreateBasedDto {
+
+}
