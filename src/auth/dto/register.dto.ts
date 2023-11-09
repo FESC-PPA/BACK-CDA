@@ -1,15 +1,15 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsObject, IsString, MinLength } from 'class-validator';
 import { Prisma } from '@prisma/client'
 export class RegisterAuthDto {
     @IsNotEmpty()
-    @IsString()
-    organizatio: Prisma.OrganizationMinAggregateInputType;
+    @IsObject()
+    organizatio: Prisma.organizationCreateManyInput;
 
     @IsString()
-    @IsNotEmpty()
-    user: Prisma.UserMinAggregateInputType;
+    @IsObject()
+    user: Prisma.userCreateManyInput;
 
     @IsString()
-    @IsNotEmpty()
-    auth: Prisma.AuthMinAggregateOutputType;
+    @IsObject()
+    auth: Prisma.authCreateManyInput;
 }

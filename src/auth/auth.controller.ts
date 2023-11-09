@@ -31,11 +31,10 @@ export class AuthController {
     @Post('register')
     async register(@Res() res: Response, @Body() { organizatio, user, auth }: RegisterAuthDto) {
         try {
-            const { status, accessToken, message } = await this.authsService.register(organizatio, user, auth);
+            const { status, message } = await this.authsService.register(organizatio, user, auth);
             res.status(status).json({
                 status,
                 data: {
-                    accessToken,
                     message
                 }
             });

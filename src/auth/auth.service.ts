@@ -5,6 +5,7 @@ import { LoginEntity } from './entities/login.entity';
 import * as bcrypt from 'bcrypt';
 import { RegisterEntity } from './entities/register.entity';
 import { Prisma } from '@prisma/client';
+const roundsOfHashing = parseInt(process.env.ROUNDS_OF_HASHING);
 
 @Injectable()
 export class AuthService {
@@ -33,39 +34,37 @@ export class AuthService {
         }
     }
 
-    async register(organization, user, auth): Promise<RegisterEntity> {
-        let existingOrganization = await this.prismaService.organization.findFirst({
+    async register(organization: Prisma.organizationCreateManyInput, user: Prisma.userCreateManyInput, auth: Prisma.authCreateManyInput): Promise<RegisterEntity> {
+
+        let existingOrganization: Prisma.OrganizationMinAggregateOutputType = await this.prismaService.organization.findFirst({
             where: {
                 OR: [
-                    { nit: organization.nit },
-                    { name: organization.name },
+                    { nit: organization.nit }
                 ],
             },
-        });
+        }); if (existingOrganization) throw new NotFoundException("Organization already exists");
 
-        // If organization does not exist, throw an error
-        if (existingOrganization) throw new Error("Organization already exists");
+        let existingUser: Prisma.UserMinAggregateOutputType = await this.prismaService.user.findFirst({
+            where: {
+                OR: [
+                    { identify: user.identify }
+                ],
+            },
+        }); if (existingUser) throw new NotFoundException("User already exists");
 
-        // If organization does not exist, create it
-        existingOrganization = await this.prismaService.organization.create({
+        const createOrganization: Prisma.OrganizationMinAggregateOutputType = await this.prismaService.organization.create({
             data: organization,
         });
 
-        // Set organizationOrganizationId for user
-        user.organizationId = existingOrganization.organizationId;
-
-        // Set roleRoleId for user
+        user.organizationId = createOrganization.organizationId;
         user.roleRoleId = 1;
-
-        // Create user
         const createdUser = await this.prismaService.user.create({
             data: user,
         });
 
-        // Set userUserId for auth
         auth.userUserId = createdUser.userId;
-
-        // Create auth
+        const hashedPassword: string = await bcrypt.hashSync(auth.password, roundsOfHashing,);
+        auth.password = hashedPassword;
         const createdAuth = await this.prismaService.auth.create({
             data: auth,
         });

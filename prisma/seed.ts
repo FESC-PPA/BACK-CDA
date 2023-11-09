@@ -1,8 +1,8 @@
-import { PrismaClient, Prisma} from '@prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client'
 const db = new PrismaClient()
 
 async function main() {
-    const weekDaysData= [
+    const weekDaysData = [
         { weekDaysId: 1, day: 'lunes' },
         { weekDaysId: 2, day: 'martes' },
         { weekDaysId: 3, day: 'miércoles' },
@@ -21,9 +21,9 @@ async function main() {
     }
 
     const roleData = [
-        { roleId: 1, role: 'administrador',  details:""},
-        { roleId: 2, role: 'supervisor', details:""},
-        { roleId: 3, role: 'empleado', details:""},
+        { roleId: 1, role: 'administrador', details: "" },
+        { roleId: 2, role: 'supervisor', details: "" },
+        { roleId: 3, role: 'empleado', details: "" },
     ]
 
     for (const data of roleData) {

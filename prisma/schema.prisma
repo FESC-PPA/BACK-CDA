@@ -84,7 +84,7 @@ model schedule {
   basedBasedId Int
   based        based          @relation(fields: [basedBasedId], references: [basedId], map: "Schedule_basedBasedId_fkey")
   userschedule userschedule[]
-  workdays     workdays[]
+  workDays     workDays[]
 
   @@index([basedBasedId], map: "Schedule_basedBasedId_fkey")
 }
@@ -120,20 +120,20 @@ model userschedule {
   @@index([userUserId], map: "UserSchedule_userUserId_fkey")
 }
 
-model weekdays {
+model weekDays {
   weekDaysId Int        @id @unique(map: "WeekDays_weekDaysId_key") @default(autoincrement())
   day        String
-  workdays   workdays[]
+  workDays   workDays[]
 }
 
-model workdays {
+model workDays {
   workDaysId         Int      @id @unique(map: "WorkDays_workDaysId_key") @default(autoincrement())
   startTime          DateTime
   endTime            DateTime
   weekDaysWeekDaysId Int
   scheduleScheduleId Int
   schedule           schedule @relation(fields: [scheduleScheduleId], references: [scheduleId], map: "WorkDays_scheduleScheduleId_fkey")
-  weekdays           weekdays @relation(fields: [weekDaysWeekDaysId], references: [weekDaysId], map: "WorkDays_weekDaysWeekDaysId_fkey")
+  weekDays           weekDays @relation(fields: [weekDaysWeekDaysId], references: [weekDaysId], map: "WorkDays_weekDaysWeekDaysId_fkey")
 
   @@index([scheduleScheduleId], map: "WorkDays_scheduleScheduleId_fkey")
   @@index([weekDaysWeekDaysId], map: "WorkDays_weekDaysWeekDaysId_fkey")
