@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterEntity } from './entities/register.entity';
 import { Prisma } from '@prisma/client';
 const roundsOfHashing = parseInt(process.env.ROUNDS_OF_HASHING);
-
+const expires_in = parseInt(process.env.EXPIRES_IN);
 @Injectable()
 export class AuthService {
     constructor(private prismaService: PrismaService, private jwtService: JwtService,) {
@@ -25,10 +25,11 @@ export class AuthService {
 
         if (!isPasswordValid) throw new UnauthorizedException('Clave incorrecta');
 
-        const accessToken: string = this.jwtService.sign({ userId: auth.user.userId });
+        const access_token: string = this.jwtService.sign({ userId: auth.user.userId });
 
         return {
-            accessToken,
+            access_token,
+            expires_in,
             message: `Bienvenido ${auth.user.firstName}`,
             status: HttpStatus.OK
         }

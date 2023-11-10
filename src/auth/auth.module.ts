@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UserModule } from 'src/user/user.module';
+const expires_in = parseInt(process.env.EXPIRES_IN);
 
 @Module({
   controllers: [AuthController],
@@ -15,7 +16,7 @@ import { UserModule } from 'src/user/user.module';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_CLAVE,
-      signOptions: { expiresIn: '5m' },
+      signOptions: { expiresIn: expires_in }
     }),
     UserModule,
   ],

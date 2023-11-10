@@ -11,11 +11,11 @@ export class AuthController {
     @Post('login')
     async login(@Res() res: Response, @Body() { document, password }: LoginAuthDto) {
         try {
-            const { status, accessToken, message } = await this.authsService.login(document, password);
+            const { status, access_token, message } = await this.authsService.login(document, password);
             res.status(status).json({
                 status,
                 data: {
-                    accessToken,
+                    access_token,
                     message
                 }
             });

@@ -12,7 +12,8 @@ export class BasedController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createBasedDto: Prisma.basedCreateManyOrganizationInput) {
+  create(@Req() req: Request, @Body() createBasedDto: Prisma.basedCreateManyInput) {
+    //createBasedDto.organizationId = req.user
     return this.basedService.create(createBasedDto);
   }
 
@@ -25,19 +26,19 @@ export class BasedController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.basedService.findOne(+id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBasedDto: UpdateBasedDto) {
+  update(@Param('id') id: number, @Body() updateBasedDto: UpdateBasedDto) {
     return this.basedService.update(+id, updateBasedDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.basedService.remove(+id);
   }
 }
