@@ -12,16 +12,18 @@ export class BasedController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Req() req: Request, @Body() createBasedDto: Prisma.basedCreateManyInput) {
-    //createBasedDto.organizationId = req.user
-    return this.basedService.create(createBasedDto);
+  async create(@Req() req: Request, @Body() createBasedDto: Prisma.basedCreateManyInput) {
+    const user: Prisma.UserMinAggregateOutputType = { ...req.user } as Prisma.UserMinAggregateOutputType
+    createBasedDto.organizationId = user.organizationId
+    return await this.basedService.create(createBasedDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Req() req: Request) {
-    console.log(req.user);
-    return this.basedService.findAll();
+  async findAll(@Req() req: Request) {
+    const user: Prisma.UserMinAggregateOutputType = { ...req.user } as Prisma.UserMinAggregateOutputType
+    const organizationId = user.organizationId
+    return await this.basedService.findAll(organizationId);
   }
 
   @UseGuards(JwtAuthGuard)

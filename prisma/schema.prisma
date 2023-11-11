@@ -32,7 +32,7 @@ model auth {
 model based {
   basedId            Int          @id @unique(map: "Based_basedId_key") @default(autoincrement())
   name               String
-  perimeterLocations String       @db.LongText
+  perimeterLocations String
   organizationId     Int
   organization       organization @relation(fields: [organizationId], references: [organizationId], map: "Based_organizationId_fkey")
   schedule           schedule[]
