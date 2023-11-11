@@ -34,8 +34,8 @@ export class BasedController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateBasedDto: UpdateBasedDto) {
-    return this.basedService.update(+id, updateBasedDto);
+  async update(@Param('id') id: number, @Body() updateBasedDto: UpdateBasedDto) {
+    return await this.basedService.update(+id, updateBasedDto);
   }
 
   @UseGuards(JwtAuthGuard)
