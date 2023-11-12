@@ -82,7 +82,11 @@ export class BasedService {
         include: {
           schedule: {
             include: {
-              workDays: true,
+              workDays: {
+                include: {
+                  weekDays: true
+                }
+              },
               usersChedule: true
             }
           }

@@ -10,17 +10,29 @@ export class ScheduleService {
 
   async create(createScheduleDto: Prisma.scheduleUncheckedCreateInput) {
     try {
-      console.log(createScheduleDto)
-      /*const schedule = await this.prismaService.schedule.create({
+      ///as Prisma.workDaysCre ateManyScheduleInput[]
+      const w = Array.isArray(createScheduleDto.workDays) ? [...createScheduleDto.workDays] : [createScheduleDto.workDays]
+      const modifiedArray: Prisma.workDaysCreateManyScheduleInput[] = w.map((item) => {
+        const { weekDays, ...rest } = item;
+        return rest;
+      })
+
+      const schedule = await this.prismaService.schedule.create({
         data: {
           name: createScheduleDto.name,
           basedBasedId: createScheduleDto.basedBasedId,
           workDays: {
-            createMany: { data: {...createScheduleDto.workDays} }
+            createMany: {
+              data: modifiedArray,
+            },
           }
         },
         include: {
-          workDays: true,
+          workDays: {
+            include: {
+              weekDays: true
+            }
+          },
           usersChedule: true
         }
       })
@@ -29,14 +41,14 @@ export class ScheduleService {
           status: HttpStatus.OK,
           data: schedule
         };
-      } else {*/
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        data: {
-          message: "Inténtelo de nuevo más tarde"
-        }
-      };
-      //}
+      } else {
+        return {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          data: {
+            message: "Inténtelo de nuevo más tarde"
+          }
+        };
+      }
     } catch (err) {
       console.error('Error:', err);
       // Maneja el error según sea necesario
