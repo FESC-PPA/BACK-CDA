@@ -5,10 +5,9 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BasedService {
-  constructor(private prismaService: PrismaService) {
-
-  }
+  constructor(private prismaService: PrismaService) { }
   async create(createBasedDto) {
+
     try {
       const based = await this.prismaService.based.create({
         data: {
@@ -74,8 +73,44 @@ export class BasedService {
 
   }
 
-  findOne(basedId: number) {
-    return `This action returns a #${basedId} based`;
+  async findOne(basedId: number) {
+    try {
+      const baseds = await this.prismaService.based.findUnique({
+        where: {
+          basedId
+        },
+        include: {
+          schedule: {
+            include: {
+              workDays: true,
+              usersChedule: true
+            }
+          }
+        }
+
+      })
+      if (baseds) {
+        console.log(basedId)
+        return {
+          status: HttpStatus.OK,
+          data: baseds
+        };
+      } else {
+        return {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          data: {
+            message: "Inténtelo de nuevo más tarde"
+          }
+        };
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Maneja el error según sea necesario
+      throw error;
+    } finally {
+      // Cierra la conexión de Prisma
+      await this.prismaService.$disconnect();
+    }
   }
 
   async update(basedId: number, updateBasedDto: Prisma.basedUpdateInput) {

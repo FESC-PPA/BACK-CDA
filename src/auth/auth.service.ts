@@ -36,7 +36,6 @@ export class AuthService {
     }
 
     async register(organization: Prisma.organizationCreateManyInput, user: Prisma.userCreateManyInput, auth: Prisma.authCreateManyInput): Promise<RegisterEntity> {
-
         let existingOrganization: Prisma.OrganizationMinAggregateOutputType = await this.prismaService.organization.findFirst({
             where: {
                 OR: [

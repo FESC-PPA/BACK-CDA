@@ -10,9 +10,10 @@ import { UserScheduleModule } from './user-schedule/user-schedule.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { ExcuseModule } from './excuse/excuse.module';
 import { FacialDataModule } from './facial-data/facial-data.module';
+import { WeekDaysModule } from './week-days/week-days.module';
 
 @Module({
-  imports: [AuthModule, OrganizationModule, UserModule, BasedModule, ScheduleModule, WorkDaysModule, UserScheduleModule, AttendanceModule, ExcuseModule, FacialDataModule],
+  imports: [AuthModule, OrganizationModule, UserModule, BasedModule, ScheduleModule, WorkDaysModule, UserScheduleModule, AttendanceModule, ExcuseModule, FacialDataModule, WeekDaysModule],
   providers: [PrismaService],
 })
 export class AppModule { }

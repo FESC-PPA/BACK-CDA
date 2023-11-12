@@ -12,8 +12,8 @@ model attendance {
   date                       DateTime
   late                       Int
   userScheduleUserScheduleId Int
-  userschedule               userschedule @relation(fields: [userScheduleUserScheduleId], references: [userScheduleId], map: "Attendance_userScheduleUserScheduleId_fkey")
-  excuse                     excuse[]
+  usersChedule               usersChedule @relation(fields: [userScheduleUserScheduleId], references: [userScheduleId], map: "Attendance_userScheduleUserScheduleId_fkey")
+  excuse                     excuse?
 
   @@index([userScheduleUserScheduleId], map: "Attendance_userScheduleUserScheduleId_fkey")
 }
@@ -23,7 +23,7 @@ model auth {
   email      String
   password   String
   active     Boolean? @default(true)
-  userUserId Int
+  userUserId Int      @unique
   user       user     @relation(fields: [userUserId], references: [userId], map: "Auth_userUserId_fkey")
 
   @@index([userUserId], map: "Auth_userUserId_fkey")
@@ -45,7 +45,8 @@ model excuse {
   status                 Int        @default(0)
   resolutionDate         DateTime?
   comment                String?
-  attendanceAttendanceId Int
+  details                String?
+  attendanceAttendanceId Int        @unique
   userUserId             Int
   attendance             attendance @relation(fields: [attendanceAttendanceId], references: [attendanceId], map: "Excuse_attendanceAttendanceId_fkey")
   user                   user       @relation(fields: [userUserId], references: [userId], map: "Excuse_userUserId_fkey")
@@ -54,10 +55,10 @@ model excuse {
   @@index([userUserId], map: "Excuse_userUserId_fkey")
 }
 
-model facialdata {
+model facialData {
   facialDataId Int    @id @unique(map: "FacialData_facialDataId_key") @default(autoincrement())
   data         String
-  userUserId   Int
+  userUserId   Int    @unique
   user         user   @relation(fields: [userUserId], references: [userId], map: "FacialData_userUserId_fkey")
 
   @@index([userUserId], map: "FacialData_userUserId_fkey")
@@ -83,7 +84,7 @@ model schedule {
   name         String
   basedBasedId Int
   based        based          @relation(fields: [basedBasedId], references: [basedId], map: "Schedule_basedBasedId_fkey")
-  userschedule userschedule[]
+  usersChedule usersChedule[]
   workDays     workDays[]
 
   @@index([basedBasedId], map: "Schedule_basedBasedId_fkey")
@@ -97,18 +98,18 @@ model user {
   phoneNumber    String?
   roleRoleId     Int
   organizationId Int
-  auth           auth[]
+  auth           auth?
   excuse         excuse[]
-  facialdata     facialdata[]
+  facialData     facialData?
   organization   organization   @relation(fields: [organizationId], references: [organizationId], map: "User_organizationId_fkey")
   role           role           @relation(fields: [roleRoleId], references: [roleId], map: "User_roleRoleId_fkey")
-  userschedule   userschedule[]
+  usersChedule   usersChedule[]
 
   @@index([organizationId], map: "User_organizationId_fkey")
   @@index([roleRoleId], map: "User_roleRoleId_fkey")
 }
 
-model userschedule {
+model usersChedule {
   userScheduleId     Int          @id @unique(map: "UserSchedule_userScheduleId_key") @default(autoincrement())
   scheduleScheduleId Int
   userUserId         Int
@@ -128,8 +129,8 @@ model weekDays {
 
 model workDays {
   workDaysId         Int      @id @unique(map: "WorkDays_workDaysId_key") @default(autoincrement())
-  startTime          DateTime
-  endTime            DateTime
+  startTime          String
+  endTime            String
   weekDaysWeekDaysId Int
   scheduleScheduleId Int
   schedule           schedule @relation(fields: [scheduleScheduleId], references: [scheduleId], map: "WorkDays_scheduleScheduleId_fkey")

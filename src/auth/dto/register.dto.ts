@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client'
 export class RegisterAuthDto {
     @IsNotEmpty()
     @IsObject()
-    organizatio: Prisma.organizationCreateManyInput;
+    organization: Prisma.organizationCreateManyInput;
 
     @IsString()
     @IsObject()
