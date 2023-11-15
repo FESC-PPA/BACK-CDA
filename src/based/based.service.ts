@@ -75,6 +75,12 @@ export class BasedService {
 
   async findOne(basedId: number) {
     try {
+      const hoy = new Date()
+      hoy.setHours(0, 0, 0, 0) // Resetear hora a 00:00
+
+      const mañana = new Date(hoy)
+      mañana.setDate(hoy.getDate() + 1)
+
       const baseds = await this.prismaService.based.findUnique({
         where: {
           basedId
@@ -87,7 +93,21 @@ export class BasedService {
                   weekDays: true
                 }
               },
-              usersChedule: true
+              usersChedule: {
+                include: {
+                  attendance: {
+                    where: {
+                      date: {
+                        gte: hoy,
+                        lt: new Date(hoy.setDate(hoy.getDate() + 1))
+                      }
+                    },
+                    include: {
+                      excuse: true
+                    }
+                  }
+                }
+              }
             }
           }
         }

@@ -33,7 +33,15 @@ export class ScheduleService {
               weekDays: true
             }
           },
-          usersChedule: true
+          usersChedule: {
+            include: {
+              attendance: {
+                include: {
+                  excuse: true
+                }
+              }
+            }
+          }
         }
       })
       if (schedule) {
