@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './module/auth/auth.module';
 import { PrismaService } from './prisma.service';
-import { OrganizationModule } from './organization/organization.module';
-import { UserModule } from './user/user.module';
-import { BasedModule } from './based/based.module';
-import { ScheduleModule } from './schedule/schedule.module';
-import { WorkDaysModule } from './work-days/work-days.module';
-import { UserScheduleModule } from './user-schedule/user-schedule.module';
-import { AttendanceModule } from './attendance/attendance.module';
-import { ExcuseModule } from './excuse/excuse.module';
-import { FacialDataModule } from './facial-data/facial-data.module';
-import { WeekDaysModule } from './week-days/week-days.module';
+import { OrganizationModule } from './module/organization/organization.module';
+import { UserModule } from './module/user/user.module';
+import { BasedModule } from './module/based/based.module';
+import { ScheduleModule } from './module/schedule/schedule.module';
+import { WorkDaysModule } from './module/work-days/work-days.module';
+import { UserScheduleModule } from './module/user-schedule/user-schedule.module';
+import { AttendanceModule } from './module/attendance/attendance.module';
+import { ExcuseModule } from './module/excuse/excuse.module';
+import { FacialDataModule } from './module/facial-data/facial-data.module';
+import { WeekDaysModule } from './module/week-days/week-days.module';
 
 @Module({
   imports: [AuthModule, OrganizationModule, UserModule, BasedModule, ScheduleModule, WorkDaysModule, UserScheduleModule, AttendanceModule, ExcuseModule, FacialDataModule, WeekDaysModule],

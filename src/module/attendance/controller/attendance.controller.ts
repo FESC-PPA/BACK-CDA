@@ -1,14 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AttendanceService } from './attendance.service';
-import { CreateAttendanceDto } from './dto/create-attendance.dto';
-import { UpdateAttendanceDto } from './dto/update-attendance.dto';
+import { AttendanceService } from '../service/attendance.service';
+import { Prisma } from '@prisma/client';
 
 @Controller('attendance')
 export class AttendanceController {
-  constructor(private readonly attendanceService: AttendanceService) {}
+  constructor(private readonly attendanceService: AttendanceService) { }
 
   @Post()
-  create(@Body() createAttendanceDto: CreateAttendanceDto) {
+  create(@Body() createAttendanceDto: Prisma.attendanceCreateManyInput) {
     return this.attendanceService.create(createAttendanceDto);
   }
 
@@ -23,7 +22,7 @@ export class AttendanceController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAttendanceDto: UpdateAttendanceDto) {
+  update(@Param('id') id: string, @Body() updateAttendanceDto: Prisma.attendanceUpdateInput) {
     return this.attendanceService.update(+id, updateAttendanceDto);
   }
 

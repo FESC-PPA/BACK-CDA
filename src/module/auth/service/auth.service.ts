@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, UnauthorizedException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
-import { LoginEntity } from './entities/login.entity';
+import { LoginEntity } from '../entities/login.entity';
 import * as bcrypt from 'bcrypt';
-import { RegisterEntity } from './entities/register.entity';
+import { RegisterEntity } from '../entities/register.entity';
 import { Prisma } from '@prisma/client';
 const roundsOfHashing = parseInt(process.env.ROUNDS_OF_HASHING);
 const expires_in = parseInt(process.env.EXPIRES_IN);

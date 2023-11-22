@@ -1,5 +1,4 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
-import { UpdateBasedDto } from './dto/update-based.dto';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
 

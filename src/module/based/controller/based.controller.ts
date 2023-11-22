@@ -1,10 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Res, Req } from '@nestjs/common';
-import { BasedService } from './based.service';
-import { CreateBasedDto } from './dto/create-based.dto';
-import { UpdateBasedDto } from './dto/update-based.dto';
-import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
+import { BasedService } from '../service/based.service';
 import { Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
+import { JwtAuthGuard } from 'src/module/auth/jwt/jwt-auth.guard';
 
 @Controller('based')
 export class BasedController {
@@ -34,7 +32,7 @@ export class BasedController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() updateBasedDto: UpdateBasedDto) {
+  async update(@Param('id') id: number, @Body() updateBasedDto: Prisma.basedUpdateInput) {
     return await this.basedService.update(+id, updateBasedDto);
   }
 
